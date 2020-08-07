@@ -152,6 +152,29 @@ export type IncidentTicketUrlBody = {
   ticket_url: string;
 };
 
+export type IncidentsQueryParams = {
+  active?: boolean;
+  stateful?: boolean;
+  page?: number;
+  page_size?: number;
+};
+
+type KeysEnum<T> = { [P in keyof Required<T>]: true };
+export const IncidentsQueryParamsKeys: KeysEnum<IncidentsQueryParams> = {
+  active: true,
+  stateful: true,
+  page: true,
+  // eslint-disable-next-line
+  page_size: true,
+};
+
+export type IncidentsQueryPaginationResponse = {
+  count: number;
+  next: string;
+  previous: string;
+  results: Incident[];
+};
+
 export interface IncidentMetadata {
   sourceSystems: SourceSystem[];
   objectTypes: IncidentObjectType[];
@@ -377,6 +400,15 @@ export class ApiClient {
     );
   }
 
+  private getIncidents(params: IncidentsQueryParams = {}): Promise<AxiosResponse<IncidentsQueryPaginationResponse>> {
+    const queryString = Object.keys(IncidentsQueryParamsKeys)
+      .filter((key: string) => params[key as keyof IncidentsQueryParams] !== undefined)
+      .map((key: string) => `${key}=${params[key as keyof IncidentsQueryParams]}`)
+      .join("&");
+
+    return this.authGet<IncidentsQueryPaginationResponse, never>(`/api/v1/incidents/?${queryString}`);
+  }
+
   public getAllIncidents(): Promise<Incident[]> {
     return resolveOrReject(
       this.authGet<Incident[], never>(`/api/v1/incidents/`),
@@ -387,8 +419,8 @@ export class ApiClient {
 
   public getActiveIncidents(): Promise<Incident[]> {
     return resolveOrReject(
-      this.authGet<Incident[], never>(`/api/v1/incidents/active/`),
-      defaultResolver,
+      this.getIncidents({ active: true }),
+      (data: IncidentsQueryPaginationResponse): Incident[] => data.results,
       (error) => new Error(`Failed to get incidents: ${error}`),
     );
   }
