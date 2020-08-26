@@ -128,7 +128,7 @@ const TicketModifiableField: React.FC<TicketModifiableFieldPropsType> = ({
     setChangeUrl(false);
   };
 
-  const error = useMemo(() => !isValidUrl(url || ""), [url]);
+  const error = useMemo(() => (url !== "" && url && !isValidUrl(url || "")) || undefined, [url]);
 
   return (
     <ListItem>
