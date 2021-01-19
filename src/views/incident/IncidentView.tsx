@@ -11,7 +11,7 @@ import { IncidentFilterToolbar } from "../../components/incident/IncidentFilterT
 
 type IncidentViewPropsType = {};
 
-const IncidentView: React.FC<IncidentViewPropsType> = ({}: IncidentViewPropsType) => {
+const IncidentView: React.FC<IncidentViewPropsType> = () => {
   const [filter, setFilter] = useState<IncidentsFilter>({
     autoUpdate: ENABLE_WEBSOCKETS_SUPPORT ? "realtime" : "interval",
     showAcked: false,

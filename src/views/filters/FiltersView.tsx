@@ -117,7 +117,7 @@ const FiltersTable: React.FC<FiltersTablePropsType> = ({
 
 type FiltersViewPropsType = {};
 
-const FiltersView: React.FC<FiltersViewPropsType> = ({}: FiltersViewPropsType) => {
+const FiltersView: React.FC<FiltersViewPropsType> = () => {
   const { incidentSnackbar: filtersSnackbar, displayAlertSnackbar }: UseAlertSnackbarResultType = useAlertSnackbar();
 
   // const [sourcesIdsFilter, setSourceIdsFilter] = useState<number[]>([]);

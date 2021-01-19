@@ -41,7 +41,6 @@ import {
 import { useAlertSnackbar, UseAlertSnackbarResultType } from "../../components/alertsnackbar";
 
 import { Incident } from "../../api";
-import { BACKEND_WS_URL } from "../../config";
 import { useStyles } from "../incident/styles";
 import { AckedItem, OpenItem } from "../incident/Chips";
 import IncidentDetails from "../incident/IncidentDetails";
@@ -293,7 +292,6 @@ type Revisioned<T> = T & { revision?: number };
 type IncidentsProps = {
   incidents: Incident[];
   noDataText: string;
-  realtime?: boolean;
   open?: boolean;
   isLoading?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -302,13 +300,10 @@ type IncidentsProps = {
 
 const IncidentTable: React.FC<IncidentsProps> = ({
   incidents,
-  realtime,
   open,
   isLoading,
   paginationComponent,
 }: IncidentsProps) => {
-  const style = useStyles();
-
   const [incidentForDetail, setIncidentForDetail] = useState<Incident | undefined>(undefined);
 
   const incidentsDictFromProps = useMemo<Revisioned<Map<Incident["pk"], Incident>>>(
@@ -346,7 +341,7 @@ const IncidentTable: React.FC<IncidentsProps> = ({
     setIncidentsDict((oldDict: Revisioned<Map<Incident["pk"], Incident>>) => {
       const newDict: typeof oldDict = new Map<Incident["pk"], Incident>(oldDict);
       const oldIncident = oldDict.get(incident.pk);
-      if (!oldIncident || incident.open != oldIncident.open) {
+      if (!oldIncident || incident.open !== oldIncident.open) {
         if (!incident.open && !noDelete) {
           // closed
           newDict.delete(incident.pk);
@@ -379,7 +374,7 @@ const IncidentTable: React.FC<IncidentsProps> = ({
     setTimeout(() => {
       setIncidentsDict((oldDict: Revisioned<Map<Incident["pk"], Incident>>) => {
         const newDict: typeof oldDict = new Map<Incident["pk"], Incident>(oldDict);
-        if (incident.open != open) {
+        if (incident.open !== open) {
           newDict.delete(incident.pk);
         } else {
           // updated in some other way
