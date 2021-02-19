@@ -18,19 +18,26 @@ import auth from "./auth";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import { MUI_THEME } from "./colorscheme";
+import { AppContext } from "./contexts";
 
 import { AlertSnackbarProvider, useAlerts } from "./components/alertsnackbar";
 import Header from "./components/header/Header";
+import Footer from "./components/Footer";
 
 // eslint-disable-next-line
-const withHeader = (Component: any) => {
+const asView = (Component: any) => {
   // eslint-disable-next-line
   return (props: any) => (
     <>
       <header>
         <Header />
       </header>
-      <Component {...props} />
+      <main className="site-content">
+        <Component {...props} />
+      </main>
+      <footer>
+        <Footer />
+      </footer>
     </>
   );
 };
@@ -55,19 +62,18 @@ const ApiInterceptor = (props: any) => {
 
 const App: React.SFC = () => {
   // const { incidentSnackbar, displayAlertSnackbar } = useAlertSnackbar();
-
   return (
-    <div>
+    <div className="site">
       <ThemeProvider theme={MUI_THEME}>
         <AlertSnackbarProvider>
           <ApiInterceptor>
             <Switch>
-              <ProtectedRoute exact path="/" component={withHeader(IncidentView)} />
-              <ProtectedRoute path="/incidents/:pk" component={withHeader(IncidentDetailsView)} />
-              <ProtectedRoute exact path="/incidents" component={withHeader(IncidentView)} />
-              <ProtectedRoute path="/notificationprofiles" component={withHeader(NotificationProfileView)} />
-              <ProtectedRoute path="/timeslots" component={withHeader(TimeslotView)} />
-              <ProtectedRoute path="/settings" component={withHeader(SettingsView)} />
+              <ProtectedRoute exact path="/" component={asView(IncidentView)} />
+              <ProtectedRoute path="/incidents/:pk" component={asView(IncidentDetailsView)} />
+              <ProtectedRoute exact path="/incidents" component={asView(IncidentView)} />
+              <ProtectedRoute path="/notificationprofiles" component={asView(NotificationProfileView)} />
+              <ProtectedRoute path="/timeslots" component={asView(TimeslotView)} />
+              <ProtectedRoute path="/settings" component={asView(SettingsView)} />
               <Route path="/login" component={LoginView} />
               <Route
                 path="*"
